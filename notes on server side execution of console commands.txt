@@ -1,0 +1,36 @@
+
+Advise from StompyNZ are executing commands from the server
+__________________
+Dont use ExecuteSync on the server btw
+you will get response text potentially bleeding in from other commands
+SingletonMonoBehaviour<SdtdConsole>.Instance.ExecuteASync("help", handler);
+handler is an IConsoleConnection
+    private class CommandResponseHandler : IConsoleConnection
+    {
+      private readonly ClientInfo _client;
+
+      public CommandResponseHandler(ClientInfo client)
+      {
+        this._client = client;
+      }
+
+      public void EnableLogLevel(LogType _type, bool _enable) { }
+
+      public string GetDescription() => "";
+
+      public void SendLine(string _text)
+      {
+        BpChat.Whisper(_client, _text);
+      }
+
+      public void SendLines(List<string> lines)
+      {
+        _client.SendPackage(NetPackageManager.GetPackage<NetPackageChat>()
+               .Setup(EChatType.Whisper, -1, string.Join("\n", lines), "Server", false, null));
+      }
+
+      public void SendLog(string _msg, string _trace, LogType _type) { }
+    }
+something like that
+var handler = new CommandResponseHandler(clientInfo);
+______________________
