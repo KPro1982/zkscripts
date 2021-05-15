@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xml>
+	<ModInfo>
+		<Name value="zkScripts" />
+		<Description value="Obtain location." />
+		<Author value="kpro"/>
+		<Version value="A19.3" />
+	</ModInfo>
+</xml>
