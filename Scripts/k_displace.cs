@@ -25,11 +25,17 @@ public class k_displace : ConsoleCmdAbstract
 		if (_senderInfo.IsLocalGame)
 		{
 			entityPlayer = GameManager.Instance.World.GetPrimaryPlayer();
-			newLocationV3i = displaceEntity(100, 100, 100);
-			SingletonMonoBehaviour<SdtdConsole>.Instance.Output("Current Player Coordinates:." + entityPlayer.GetBlockPosition());
-			chatOutput("Current Player Coordinates: " + entityPlayer.GetBlockPosition() + "  New Coordinates: " + newLocationV3i.ToString());
-			ConsoleCmdTeleport.Execute(convertToList(newLocationV3i),_senderInfo);
-			
+			newLocationV3i = displaceEntity(100, 0, 100);
+			chatOutput(string.Format("Current Player Coordinates: {0},{1}  -> New Coordinates {2}, {3}", entityPlayer.GetBlockPosition().x, entityPlayer.GetBlockPosition().z, newLocationV3i.x, newLocationV3i.z));
+			if (!SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient)
+			{
+				SingletonMonoBehaviour<SdtdConsole>.Instance.ExecuteSync(buildConsoleCommand(newLocationV3i), null);
+			}
+			else
+			{
+				//SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageConsoleCmdServer>().Setup(GameManager.Instance.World.GetPrimaryPlayerId(), "your command"), false);
+			}
+
 		}
 		else
 		{
@@ -43,11 +49,10 @@ public class k_displace : ConsoleCmdAbstract
 		Vector3i displaceAmount = new Vector3i(_x, _y, _z);
 		return entityPlayer.GetBlockPosition() + displaceAmount;
 	}
-	private List<String> convertToList(Vector3i _location)
+	private string buildConsoleCommand(Vector3i _location)
     {
-		List<string> outputList = new List<string>();
-		outputList.Add(_location.ToString());
-		return outputList;
+		string outputStr = string.Format("teleport {0} {1} ", _location.x,  _location.z);
+		return outputStr;
     }
 
 	private void chatOutput(string msg)
