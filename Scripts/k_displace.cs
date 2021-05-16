@@ -21,8 +21,14 @@ public class k_displace : ConsoleCmdAbstract
 			bool isValid = int.TryParse(_params[0], out dx);
 			if (isValid)
             {
+
 				isValid = int.TryParse(_params[1], out dz);
 			}
+		} else
+        {
+			var rand = new Random();
+			dx = rand.Next(10, 30);
+			dz = rand.Next(10, 30);
 		}
 
 			if (!_senderInfo.IsLocalGame && _senderInfo.RemoteClientInfo == null)
